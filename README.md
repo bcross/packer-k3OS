@@ -4,6 +4,8 @@ Currently supported platforms
 
 Running RunMe.ps1 will run Bootstrap.ps1, then Build.ps1, then Deploy.ps1. Run Clean.ps1 to clean up all VMs and start over. 
 
+You will be asked to allow Packer through the firewall. You only need to allow it to Public networks.
+
 The scripts are designed to be quiet. As Packer runs, all output is stored in packer_logs. If it feels stuck, go there to see why.
 
 Run Bootstrap.ps1 -Force to update binaries and the k3OS iso.
