@@ -12,7 +12,7 @@ Run Bootstrap.ps1 again to update binaries and the k3OS iso.
 
 ## What you end up with
 * VMs stored in the vms folder.
-* config file in $env:USERPROFILE\.kube folder. This is used by kubectl and helm to communicate with the cluster.
+* config file in $env:USERPROFILE\\.kube folder. This is used by kubectl and helm to communicate with the cluster.
 * A fully functional Kubernetes cluster managed by Rancher.
 
 ## How to use it 
