@@ -3,7 +3,7 @@
         "vm_name": "##name##",
         "type": "hyperv-iso",
         "boot_wait": "60s",
-        "boot_command": ["rancher","<enter>","<wait>","sudo k3os install","<enter>","<wait>","1","<enter>","<wait>","y","<enter>","<wait>","http://{{ .HTTPIP }}:{{ .HTTPPort }}/##name##.yml","<enter>","<wait>","y","<enter>"],
+        "boot_command": ["rancher","<enter>","<wait100ms>","sudo k3os install","<enter>","<wait100ms>","1","<enter>","<wait100ms>","y","<enter>","<wait100ms>","http://{{ .HTTPIP }}:{{ .HTTPPort }}/##name##.yml","<enter>","<wait100ms>","y","<enter>"],
         "http_directory": "packer_runfiles",
         "iso_url": "k3os-amd64.iso",
         "iso_checksum": "sha256:e4263102018f855babc0cf0fed855f6b9d5b1a1f1dfc287922215f1e99e8a846",
