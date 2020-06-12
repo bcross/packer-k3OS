@@ -1,0 +1,28 @@
+hostname: ##name##
+ssh_authorized_keys:
+- ##sshkey##
+k3os:
+  token: ##k3stoken##
+  k3s_args:
+    - server
+  server_url: https://##masterip##:6443
+  password: ##password##
+  dns_nameservers:
+    - 1.1.1.1
+    - 1.0.0.1
+  ntp_servers:
+    - 0.us.pool.ntp.org
+    - 1.us.pool.ntp.org
+write_files:
+  - enconding: ""
+    content: |-
+      #!/bin/bash
+      ETH0=$(connmanctl services | awk '{ print $3 }' | while read -r s1; do connmanctl services $s1 | grep -q "eth0" && echo "$s1"; done)
+      connmanctl config $ETH0 --ipv4 manual ##ip## ##subnet## ##gateway## --nameservers ##nameservers##
+      connmanctl config $ETH0 --ipv6 off
+      service connman restart
+    owner: root:root
+    path: /etc/run-cmd.sh
+    permissions: '0755'
+run_cmd:
+  - "/etc/run-cmd.sh"

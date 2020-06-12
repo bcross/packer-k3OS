@@ -1,0 +1,34 @@
+{
+    "builders": [{
+        "vm_name": "##name##",
+        "type": "hyperv-iso",
+        "boot_wait": "60s",
+        "boot_command": ["rancher","<enter>","sudo k3os install","<enter>","1","<enter>","y","<enter>","http://{{ .HTTPIP }}:{{ .HTTPPort }}/##name##.yml","<enter>","y","<enter>"],
+        "http_directory": ".",
+        "iso_url": "k3os-amd64.iso",
+        "iso_checksum": "sha256:e4263102018f855babc0cf0fed855f6b9d5b1a1f1dfc287922215f1e99e8a846",
+        "ssh_username": "rancher",
+        "ssh_keypair_name": "",
+        "ssh_private_key_file": "##privatekey##",
+        "ssh_wait_timeout":"1000s",
+        "disk_size": "10000",
+        "shutdown_command": "sudo poweroff",
+        "cpus":"4",
+        "memory": "2048",
+        "generation":"2",
+        "switch_name" : "Default Switch",
+        "output_directory": "vms\\##name##",
+        "headless": "true"
+    }],
+    "provisioners": [{
+        "type": "shell",
+        "remote_folder": "~",
+        "inline": ["while [ ! -f /etc/rancher/k3s/k3s.yaml ]; do sleep 1; done"]
+    },
+    {
+        "type": "file",
+        "direction": "download",
+        "source": "/etc/rancher/k3s/k3s.yaml",
+        "destination": "k3s.yaml"
+    }]
+}

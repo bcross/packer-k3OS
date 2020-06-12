@@ -1,0 +1,4 @@
+*.exe
+/packer_cache
+/vms
+*.iso
