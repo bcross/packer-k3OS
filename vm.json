@@ -29,6 +29,6 @@
         "type": "file",
         "direction": "download",
         "source": "/etc/rancher/k3s/k3s.yaml",
-        "destination": "k3s.yaml"
+        "destination": "packer_runfiles\\k3s.yaml"
     }]
 }

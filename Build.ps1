@@ -60,8 +60,8 @@ if (!(Test-Path ".\packer_runfiles")) {New-Item -ItemType Directory ".\packer_ru
         Start-Sleep -Seconds 1
     }
     $proc.WaitForExit()
-    Remove-Item .\$vmname.json -Force
-    Remove-Item .\$vmname.yml -Force
+    Remove-Item .\packer_runfiles\$vmname.json -Force
+    Remove-Item .\packer_runfiles\$vmname.yml -Force
     $vm = Get-ChildItem .\vms\$vmname -Include *.vmcx -Recurse | Import-VM
     $hddPath = $vm | Get-VMHardDiskDrive | select -First 1 -ExpandProperty Path | Split-Path
     New-VHD -Path ($hddPath + "\$vmname`_data01.vhdx") -SizeBytes 50GB -Dynamic 1>$null
@@ -69,5 +69,5 @@ if (!(Test-Path ".\packer_runfiles")) {New-Item -ItemType Directory ".\packer_ru
     $vm | Start-VM
 }
 if (!(Test-Path $env:USERPROFILE\.kube)) {New-Item -ItemType Directory $env:USERPROFILE\.kube}
-(Get-Content .\k3s.yaml) -replace "127.0.0.1",$masterIp | Set-Content $env:USERPROFILE\.kube\config
-Remove-Item .\k3s.yaml -Force
+(Get-Content .\packer_runfiles\k3s.yaml) -replace "127.0.0.1",$masterIp | Set-Content $env:USERPROFILE\.kube\config
+Remove-Item .\packer_runfiles\k3s.yaml -Force
