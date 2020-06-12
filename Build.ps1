@@ -7,7 +7,7 @@ param (
     [Parameter(Mandatory = $true,HelpMessage = "Can be any string")]
     [string] $K3sToken,
     [Parameter(Mandatory = $true)]
-    [string] $rancherPassword,
+    [string] $Password,
     [ValidateScript({(Test-Path "$env:USERPROFILE\.ssh\id_rsa.pub") -or (Test-Path $_)})]
     [string] $PublicKey = "$env:USERPROFILE\.ssh\id_rsa.pub",
     [ValidateScript({(Test-Path $env:USERPROFILE\.ssh\id_rsa) -or (Test-Path $_)})]
@@ -24,6 +24,7 @@ $gatewayIp = $wmiAdapter.IPAddress[0]
 
 if (!(Test-Path ".\vms")) {New-Item -ItemType Directory ".\vms" 1>$null}
 if (!(Test-Path ".\packer_logs")) {New-Item -ItemType Directory ".\packer_logs" 1>$null}
+if (!(Test-Path ".\packer_runfiles")) {New-Item -ItemType Directory ".\packer_runfiles" 1>$null}
 
 1..$number | % {
     $vmname = $namePrefix + "{0:00}" -f $_
@@ -40,8 +41,9 @@ if (!(Test-Path ".\packer_logs")) {New-Item -ItemType Directory ".\packer_logs" 
 
     (Get-Content .\vm.json) `
     -replace "##name##",$vmname `
-    -replace "##privatekey##",$PrivateKey -replace "\\","\\" | `
-     Set-Content .\$vmname.json
+    -replace "##password##",$Password `
+    -replace "##privatekey##",($PrivateKey -replace "\\","\\") | `
+     Set-Content .\packer_runfiles\$vmname.json
 
     (Get-Content $cloudconfig) `
         -replace "##name##",$vmname `
@@ -51,10 +53,10 @@ if (!(Test-Path ".\packer_logs")) {New-Item -ItemType Directory ".\packer_logs" 
         -replace "##subnet##",$subnet `
         -replace "##gateway##",$gatewayIp `
         -replace "##nameservers##",( '"' + ($nameservers -join " ") + '"') `
-        -replace "##password##",$password `
+        -replace "##password##",$Password `
         -replace "##masterip##",$masterIp | `
-        Set-Content .\$vmname.yml
-    $proc = Start-Process ".\packer" -ArgumentList "build -on-error=ask -force `"$vmname.json`"" -NoNewWindow -PassThru -RedirectStandardOutput ".\packer_logs\$vmname.log"
+        Set-Content .\packer_runfiles\$vmname.yml
+    $proc = Start-Process ".\packer" -ArgumentList "build -on-error=ask -force `".\packer_runfiles\$vmname.json`"" -NoNewWindow -PassThru -RedirectStandardOutput ".\packer_logs\$vmname.log"
     while (!(Test-Path .\vms\$vmname)){
         Start-Sleep -Seconds 1
     }

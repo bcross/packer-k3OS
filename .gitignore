@@ -2,4 +2,5 @@
 *.iso
 /packer_cache
 /packer_logs
+/packer_runfiles
 /vms
