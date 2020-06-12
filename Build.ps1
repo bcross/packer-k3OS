@@ -41,7 +41,6 @@ if (!(Test-Path ".\packer_runfiles")) {New-Item -ItemType Directory ".\packer_ru
 
     (Get-Content .\vm.json) `
     -replace "##name##",$vmname `
-    -replace "##password##",$Password `
     -replace "##privatekey##",($PrivateKey -replace "\\","\\") | `
      Set-Content .\packer_runfiles\$vmname.json
 
