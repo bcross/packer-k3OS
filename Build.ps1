@@ -4,7 +4,7 @@ param (
     [string] $NamePrefix,
     [Parameter(Mandatory = $true)]
     [int] $Number,
-    [Parameter(Mandatory = $true)]
+    [Parameter(Mandatory = $true,HelpMessage = "Can be any string")]
     [string] $K3sToken,
     [Parameter(Mandatory = $true)]
     [string] $rancherPassword,
@@ -22,7 +22,8 @@ $wmiAdapter = Get-WmiObject Win32_NetworkAdapterConfiguration | ? Description -e
 $subnet = $wmiAdapter.IpSubnet[0]
 $gatewayIp = $wmiAdapter.IPAddress[0]
 
-if (!(Test-Path ".\vms")) {New-Item -ItemType Directory ".\vms"}
+if (!(Test-Path ".\vms")) {New-Item -ItemType Directory ".\vms" 1>$null}
+if (!(Test-Path ".\packer_logs")) {New-Item -ItemType Directory ".\packer_logs" 1>$null}
 
 1..$number | % {
     $vmname = $namePrefix + "{0:00}" -f $_
@@ -53,14 +54,14 @@ if (!(Test-Path ".\vms")) {New-Item -ItemType Directory ".\vms"}
         -replace "##password##",$password `
         -replace "##masterip##",$masterIp | `
         Set-Content .\$vmname.yml
-    $proc = Start-Process ".\packer" -ArgumentList "build -on-error=ask -force `"$vmname.json`"" -NoNewWindow -PassThru
-    while (!(Test-Path $vmname)){
+    $proc = Start-Process ".\packer" -ArgumentList "build -on-error=ask -force `"$vmname.json`"" -NoNewWindow -PassThru -RedirectStandardOutput ".\packer_logs\$vmname.log"
+    while (!(Test-Path .\vms\$vmname)){
         Start-Sleep -Seconds 1
     }
     $proc.WaitForExit()
     Remove-Item .\$vmname.json -Force
     Remove-Item .\$vmname.yml -Force
-    $vm = Get-ChildItem .\$vmname -Include *.vmcx -Recurse | Import-VM
+    $vm = Get-ChildItem .\vms\$vmname -Include *.vmcx -Recurse | Import-VM
     $hddPath = $vm | Get-VMHardDiskDrive | select -First 1 -ExpandProperty Path | Split-Path
     New-VHD -Path ($hddPath + "\$vmname`_data01.vhdx") -SizeBytes 50GB -Dynamic 1>$null
     Add-VMHardDiskDrive -VMName $vm.Name -ControllerType SCSI -ControllerNumber 0 -ControllerLocation 1 -Path ($hddPath + "\$vmname`_data01.vhdx")
