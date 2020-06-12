@@ -1,9 +1,14 @@
-## Currently supported platforms
+## Instructions
+Currently supported platforms
 * Windows 10 Hyper-V
 
-Running RunMe.ps1 will run Bootstrap.ps1, then Build.ps1, then Deploy.ps1. Run Clean.ps1 to clean up all VMs and start over.
+Running RunMe.ps1 will run Bootstrap.ps1, then Build.ps1, then Deploy.ps1. Run Clean.ps1 to clean up all VMs and start over. 
+
+Don't run Bootstrap.ps1 every time. It's slow.
 
 The scripts are designed to be quiet. As Packer runs, all output is stored in packer_logs. If it feels stuck, go there to see why.
+
+Run Bootstrap.ps1 again to update binaries and the k3OS iso.
 
 ## What you end up with
 * VMs stored in the vms folder.
