@@ -2,7 +2,7 @@
 Currently supported platforms
 * Windows 10 Hyper-V
 
-Generate your ssh keys. It is recommended to store these in $env:USERPROFILE\.ssh. Just run ssh-keygen in command line/PowerShell.
+Generate your ssh keys. It is recommended to store these in $env:USERPROFILE\\.ssh. Just run ssh-keygen in command line/PowerShell.
 
 Running RunMe.ps1 will run Bootstrap.ps1, then Build.ps1, then Deploy.ps1. Run Clean.ps1 to clean up all VMs and start over. 
 
