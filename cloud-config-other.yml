@@ -3,6 +3,8 @@ ssh_authorized_keys:
 - ##sshkey##
 k3os:
   token: ##k3stoken##
+    labels:
+    plan.upgrade.cattle.io/k3os-latest: true
   k3s_args:
     - server
   server_url: https://##masterip##:6443
